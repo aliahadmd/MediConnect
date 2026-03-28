@@ -68,16 +68,16 @@ services:
       - mediconnect
     restart: unless-stopped
 
-  # LiveKit WebRTC server
+  # LiveKit WebRTC server (config baked into image)
   livekit:
-    image: livekit/livekit-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.livekit
     command: --config /etc/livekit.yaml
     ports:
       - "7880:7880"
       - "7881:7881"
       - "7882:7882/udp"
-    volumes:
-      - ./livekit.prod.yaml:/etc/livekit.yaml:ro
     networks:
       - mediconnect
     restart: unless-stopped
