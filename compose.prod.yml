@@ -1,0 +1,104 @@
+services:
+  # Next.js application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-mediconnect}:${POSTGRES_PASSWORD:-mediconnect}@postgres:5432/${POSTGRES_DB:-mediconnect}
+      LIVEKIT_URL: ${LIVEKIT_PUBLIC_URL:-ws://livekit:7880}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-secret}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: "9000"
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - mediconnect
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Database migration runner (runs once then exits)
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-mediconnect}:${POSTGRES_PASSWORD:-mediconnect}@postgres:5432/${POSTGRES_DB:-mediconnect}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mediconnect
+    restart: "no"
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mediconnect}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mediconnect}
+      POSTGRES_DB: ${POSTGRES_DB:-mediconnect}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mediconnect} -d ${POSTGRES_DB:-mediconnect}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # LiveKit WebRTC server
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --config /etc/livekit.yaml
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    volumes:
+      - ./livekit.prod.yaml:/etc/livekit.yaml:ro
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # MinIO S3-compatible object storage
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  mediconnect:
+    driver: bridge
