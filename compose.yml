@@ -1,0 +1,121 @@
+services:
+  # Node.js service (use with: docker compose up nextjs-standalone --build)
+  nextjs-standalone:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nextjs-standalone-image
+    container_name: nextjs-standalone-container
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
+      LIVEKIT_URL: ws://livekit:7880
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: secret
+      MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # Bun service (use with: docker compose up nextjs-standalone-with-bun --build)
+  nextjs-standalone-with-bun:
+    build:
+      context: .
+      dockerfile: Dockerfile.bun
+    image: nextjs-standalone-bun-image
+    container_name: nextjs-standalone-bun-container
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
+      LIVEKIT_URL: ws://livekit:7880
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: secret
+      MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: mediconnect-postgres
+    environment:
+      POSTGRES_USER: mediconnect
+      POSTGRES_PASSWORD: mediconnect
+      POSTGRES_DB: mediconnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mediconnect -d mediconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # LiveKit WebRTC server
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: mediconnect-livekit
+    command: --config /etc/livekit.yaml
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+  # MinIO S3-compatible object storage
+  minio:
+    image: minio/minio:latest
+    container_name: mediconnect-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - mediconnect
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  mediconnect:
+    driver: bridge
