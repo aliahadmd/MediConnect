@@ -46,6 +46,10 @@ COPY . .
 
 ENV NODE_ENV=production
 
+# Provide a dummy DATABASE_URL for build time (Next.js needs it to compile)
+# The real value is injected at runtime via docker compose environment
+ENV DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
