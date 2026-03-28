@@ -9,7 +9,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: "3000"
-      DATABASE_URL: postgresql://${POSTGRES_USER:-mediconnect}:${POSTGRES_PASSWORD:-mediconnect}@postgres:5432/${POSTGRES_DB:-mediconnect}
+      DATABASE_URL: postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
       LIVEKIT_URL: ${LIVEKIT_PUBLIC_URL:-ws://livekit:7880}
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-secret}
@@ -43,7 +43,7 @@ services:
       context: .
       dockerfile: Dockerfile.migrate
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-mediconnect}:${POSTGRES_PASSWORD:-mediconnect}@postgres:5432/${POSTGRES_DB:-mediconnect}
+      DATABASE_URL: postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,13 +55,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-mediconnect}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mediconnect}
-      POSTGRES_DB: ${POSTGRES_DB:-mediconnect}
+      POSTGRES_USER: mediconnect
+      POSTGRES_PASSWORD: mediconnect
+      POSTGRES_DB: mediconnect
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mediconnect} -d ${POSTGRES_DB:-mediconnect}"]
+      test: ["CMD-SHELL", "pg_isready -U mediconnect -d mediconnect"]
       interval: 5s
       timeout: 5s
       retries: 5
