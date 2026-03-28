@@ -4,4 +4,4 @@ rtc:
   udp_port: 7882
   use_external_ip: true
 keys:
-  devkey: secret
+  devkey: aVeryLongSecretKeyThatIsAtLeast32Characters
