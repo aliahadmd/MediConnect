@@ -36,6 +36,26 @@ services:
     networks:
       - internal
 
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrate
+    env_file: .env
+    entrypoint: ["npx", "tsx", "lib/db/seed.ts"]
+    environment:
+      NODE_ENV: production
+      SEED_CONFIRM: "yes-seed-production"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - internal
+    profiles:
+      - seed
+
   postgres:
     image: postgres:16-alpine
     environment:

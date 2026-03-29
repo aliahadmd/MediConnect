@@ -128,13 +128,9 @@ This starts:
 Push the schema and optionally seed demo data:
 
 ```bash
-# Push schema
-docker compose exec nextjs-standalone npx drizzle-kit push
-
-# (Optional) Seed demo data for showcase
-docker compose exec nextjs-standalone \
-  NODE_ENV=production SEED_CONFIRM=yes-seed-production \
-  npx tsx --env-file=.env.production lib/db/seed.ts
+# Schema is auto-applied by the migrate service on startup.
+# To seed demo data:
+docker compose -f docker-compose.production.yml --profile seed up seed
 ```
 
 ## 8. Set up reverse proxy (Nginx + SSL)
