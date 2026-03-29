@@ -32,7 +32,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-.env.coolify
+.env.production
 
 # production env (contains secrets)
 # .env.production is the TEMPLATE (committed)
