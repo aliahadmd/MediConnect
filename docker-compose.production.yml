@@ -69,26 +69,12 @@ services:
           devkey: aVeryLongSecretKeyThatIsAtLeast32Characters
         EOF
         exec livekit-server --config /tmp/livekit.yaml --node-ip 72.62.162.106
-    labels:
-      - traefik.enable=true
-      # HTTP router for LiveKit signaling
-      - traefik.http.routers.livekit.rule=Host(`livekit.aliahad.com`)
-      - traefik.http.routers.livekit.entrypoints=websecure
-      - traefik.http.routers.livekit.tls.certresolver=letsencrypt
-      - traefik.http.services.livekit.loadbalancer.server.port=7880
-      # CORS headers
-      - traefik.http.middlewares.livekit-cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS
-      - traefik.http.middlewares.livekit-cors.headers.accesscontrolallowheaders=*
-      - traefik.http.middlewares.livekit-cors.headers.accesscontrolalloworiginlist=https://mediconnect.aliahad.com
-      - traefik.http.middlewares.livekit-cors.headers.accesscontrolmaxage=100
-      - traefik.http.middlewares.livekit-cors.headers.addvaryheader=true
-      - traefik.http.routers.livekit.middlewares=livekit-cors
     ports:
+      - "7880:7880"
       - "7881:7881"
       - "7882:7882/udp"
     networks:
       - internal
-      - traefik-public
     restart: unless-stopped
 
   minio:
