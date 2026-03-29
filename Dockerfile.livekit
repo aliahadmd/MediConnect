@@ -1,2 +1,0 @@
-FROM livekit/livekit-server:latest
-COPY livekit.prod.yaml /etc/livekit.yaml

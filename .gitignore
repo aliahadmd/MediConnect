@@ -34,6 +34,10 @@ yarn-error.log*
 .env
 .env.coolify
 
+# production env (contains secrets)
+# .env.production is the TEMPLATE (committed)
+# .env is the actual secrets file (never committed)
+
 # vercel
 .vercel
 
