@@ -13,28 +13,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js Docker Example - Standalone Mode",
+  title: "MediConnect- telemedicine platform",
   description:
-    "A production-ready example demonstrating how to Dockerize Next.js applications using standalone mode.",
+    "MediConnect is a production-ready virtual clinic that connects patients with doctors through a modern web interface.",
   keywords: [
-    "Next.js",
-    "Docker",
-    "standalone mode",
-    "containerization",
-    "React",
-    "Node.js",
+    "Mediconnect",
+    "Doctor",
+    "Healthcare",
+    "video",
+    "medicine",
+    "Patient",
   ],
   openGraph: {
-    title: "Next.js Docker Example - Standalone Mode",
+    title: "MediConnect- telemedicine platform",
     description:
-      "A production-ready example demonstrating how to Dockerize Next.js applications using standalone mode.",
+      "MediConnect is a production-ready virtual clinic that connects patients with doctors through a modern web interface.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Next.js Docker Example - Standalone Mode",
+    title: "MediConnect- telemedicine platform",
     description:
-      "A production-ready example demonstrating how to Dockerize Next.js applications using standalone mode.",
+      "MediConnect is a production-ready virtual clinic that connects patients with doctors through a modern web interface.",
   },
 };
 
