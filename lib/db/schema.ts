@@ -11,6 +11,7 @@ import {
   pgEnum,
   numeric,
   integer,
+  index,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["patient", "doctor", "admin"]);
@@ -105,13 +106,17 @@ export const appointments = pgTable("appointments", {
   scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_appointments_patient_id").on(table.patientId),
+  index("idx_appointments_doctor_id").on(table.doctorId),
+  index("idx_appointments_status").on(table.status),
+]);
 
 export const visitNotes = pgTable("visit_notes", {
   id: uuid("id").defaultRandom().primaryKey(),
   appointmentId: uuid("appointment_id")
     .notNull()
-    .references(() => appointments.id)
+    .references(() => appointments.id, { onDelete: "cascade" })
     .unique(),
   content: text("content").notNull().default(""),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -122,7 +127,7 @@ export const prescriptions = pgTable("prescriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
   appointmentId: uuid("appointment_id")
     .notNull()
-    .references(() => appointments.id)
+    .references(() => appointments.id, { onDelete: "cascade" })
     .unique(),
   medications: jsonb("medications").notNull(),
   notes: text("notes"),
@@ -139,7 +144,9 @@ export const notifications = pgTable("notifications", {
   message: text("message").notNull(),
   read: boolean("read").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_notifications_user_id").on(table.userId),
+]);
 
 // --- Profile enums ---
 
@@ -163,6 +170,8 @@ export const doctorProfiles = pgTable("doctor_profiles", {
   phone: varchar("phone", { length: 20 }),
   consultationFee: numeric("consultation_fee", { precision: 10, scale: 2 }),
   yearsOfExperience: integer("years_of_experience"),
+  averageRating: numeric("average_rating", { precision: 3, scale: 2 }),
+  reviewCount: integer("review_count").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
@@ -196,3 +205,25 @@ export const notificationPreferences = pgTable("notification_preferences", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+// --- Reviews ---
+
+export const reviews = pgTable("reviews", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  appointmentId: uuid("appointment_id")
+    .notNull()
+    .references(() => appointments.id, { onDelete: "cascade" })
+    .unique(),
+  patientId: text("patient_id")
+    .notNull()
+    .references(() => users.id),
+  doctorId: text("doctor_id")
+    .notNull()
+    .references(() => users.id),
+  rating: integer("rating").notNull(),
+  reviewText: text("review_text"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("idx_reviews_doctor_id").on(table.doctorId),
+]);

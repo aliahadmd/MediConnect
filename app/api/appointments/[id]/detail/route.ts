@@ -59,7 +59,7 @@ export async function GET(
       sql`${users} as patient`,
       sql`patient.id = ${appointments.patientId}`
     )
-    .innerJoin(
+    .leftJoin(
       availabilitySlots,
       eq(availabilitySlots.id, appointments.slotId)
     )

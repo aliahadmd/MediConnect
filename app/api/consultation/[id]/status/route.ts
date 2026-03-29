@@ -31,8 +31,15 @@ export async function GET(
     );
   }
 
-  // Verify user is the patient for this appointment
-  if (appointment.patientId !== session.user.id) {
+  // Verify user is the patient, assigned doctor, or admin
+  const userId = session.user.id;
+  const role = session.user.role as string;
+
+  if (
+    appointment.patientId !== userId &&
+    appointment.doctorId !== userId &&
+    role !== "admin"
+  ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

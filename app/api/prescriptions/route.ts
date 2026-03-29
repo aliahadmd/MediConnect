@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { eq, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { appointments, prescriptions, users } from "@/lib/db/schema";
 import { requireRole } from "@/lib/auth-helpers";
@@ -7,6 +7,45 @@ import { createPrescriptionSchema } from "@/lib/validators";
 import { generatePrescriptionPdf } from "@/lib/pdf";
 import { uploadPdf } from "@/lib/minio";
 import { createNotification, sendEmail } from "@/lib/notifications";
+
+export async function GET() {
+  let session;
+  try {
+    session = await requireRole("patient");
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  const results = await db
+    .select({
+      id: prescriptions.id,
+      appointmentId: prescriptions.appointmentId,
+      doctorName: users.name,
+      appointmentDate: appointments.scheduledAt,
+      medications: prescriptions.medications,
+      notes: prescriptions.notes,
+      pdfKey: prescriptions.pdfKey,
+      createdAt: prescriptions.createdAt,
+    })
+    .from(prescriptions)
+    .innerJoin(appointments, eq(prescriptions.appointmentId, appointments.id))
+    .innerJoin(users, eq(appointments.doctorId, users.id))
+    .where(eq(appointments.patientId, session.user.id))
+    .orderBy(desc(prescriptions.createdAt));
+
+  const items = results.map((r) => ({
+    id: r.id,
+    appointmentId: r.appointmentId,
+    doctorName: r.doctorName,
+    appointmentDate: r.appointmentDate.toISOString(),
+    medications: r.medications,
+    notes: r.notes,
+    pdfKey: r.pdfKey,
+    createdAt: r.createdAt.toISOString(),
+  }));
+
+  return NextResponse.json(items);
+}
 
 export async function POST(request: NextRequest) {
   let session;

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { availabilitySlots } from "@/lib/db/schema";
-import { requireRole } from "@/lib/auth-helpers";
+import { getSession, requireRole } from "@/lib/auth-helpers";
 import {
   createAvailabilitySlotSchema,
   hasTimeOverlap,
@@ -10,6 +10,12 @@ import {
 } from "@/lib/validators";
 
 export async function GET(request: NextRequest) {
+  try {
+    await getSession();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const doctorId = request.nextUrl.searchParams.get("doctorId");
   if (!doctorId) {
     return NextResponse.json(

@@ -22,7 +22,9 @@ import {
   Loader2Icon,
   Video,
   PhoneCall,
+  Eye,
 } from "lucide-react";
+import { PatientProfileViewer } from "@/components/profiles/patient-profile-viewer";
 import type { Appointment } from "./appointment-card";
 
 const STATUS_OPTIONS = [
@@ -77,6 +79,9 @@ export function DoctorAppointmentList({ callingNotifications = {} }: DoctorAppoi
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const fetchAppointments = useCallback(async () => {
     try {
@@ -233,14 +238,40 @@ export function DoctorAppointmentList({ callingNotifications = {} }: DoctorAppoi
                         )}
                         <span className="ml-1">Reject</span>
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedPatientId(appointment.patientId);
+                          setSelectedAppointmentId(appointment.id);
+                          setIsProfileOpen(true);
+                        }}
+                      >
+                        <Eye className="mr-1 size-4" />
+                        View Patient Profile
+                      </Button>
                     </>
                   ) : appointment.status === "confirmed" ? (
-                    <Button asChild size="sm">
-                      <Link href={`/consultation/${appointment.id}`}>
-                        <Video className="mr-1 size-4" />
-                        Join Consultation
-                      </Link>
-                    </Button>
+                    <>
+                      <Button asChild size="sm">
+                        <Link href={`/consultation/${appointment.id}`}>
+                          <Video className="mr-1 size-4" />
+                          Join Consultation
+                        </Link>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedPatientId(appointment.patientId);
+                          setSelectedAppointmentId(appointment.id);
+                          setIsProfileOpen(true);
+                        }}
+                      >
+                        <Eye className="mr-1 size-4" />
+                        View Patient Profile
+                      </Button>
+                    </>
                   ) : (
                     <span className="text-sm text-muted-foreground">
                       {config.label}
@@ -251,6 +282,19 @@ export function DoctorAppointmentList({ callingNotifications = {} }: DoctorAppoi
             );
           })}
         </div>
+      )}
+
+      {selectedPatientId && selectedAppointmentId && (
+        <PatientProfileViewer
+          patientId={selectedPatientId}
+          appointmentId={selectedAppointmentId}
+          open={isProfileOpen}
+          onClose={() => {
+            setIsProfileOpen(false);
+            setSelectedPatientId(null);
+            setSelectedAppointmentId(null);
+          }}
+        />
       )}
     </div>
   );

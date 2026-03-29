@@ -1,5 +1,6 @@
 import { User, Stethoscope, Clock, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { RatingStars } from "@/components/reviews/rating-stars";
 
 interface DoctorProfileCardProps {
   name: string;
@@ -8,6 +9,8 @@ interface DoctorProfileCardProps {
   yearsOfExperience?: number | null;
   consultationFee?: string | number | null;
   profileComplete: boolean;
+  averageRating?: number | null;
+  reviewCount?: number;
 }
 
 export function DoctorProfileCard({
@@ -17,6 +20,8 @@ export function DoctorProfileCard({
   yearsOfExperience,
   consultationFee,
   profileComplete,
+  averageRating,
+  reviewCount,
 }: DoctorProfileCardProps) {
   return (
     <Card size="sm" className="w-full">
@@ -58,6 +63,14 @@ export function DoctorProfileCard({
                 <span className="flex items-center gap-1">
                   <DollarSign className="h-3.5 w-3.5" />
                   {Number(consultationFee).toFixed(2)}
+                </span>
+              )}
+              {averageRating != null && (
+                <span className="flex items-center gap-1">
+                  <RatingStars rating={averageRating} size="sm" />
+                  <span className="text-xs text-muted-foreground">
+                    ({reviewCount ?? 0} {reviewCount === 1 ? "review" : "reviews"})
+                  </span>
                 </span>
               )}
             </div>

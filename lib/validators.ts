@@ -68,7 +68,18 @@ export const createAvailabilitySlotSchema = z
 export const createAppointmentSchema = z.object({
   slotId: z.string().uuid(),
   doctorId: z.string().min(1),
-  timezone: z.string().optional(),
+  timezone: z.string().optional().refine(
+    (tz) => {
+      if (!tz) return true;
+      try {
+        Intl.DateTimeFormat(undefined, { timeZone: tz });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: "Invalid IANA timezone identifier" }
+  ),
 });
 
 export const updateAppointmentSchema = z.object({
@@ -135,4 +146,26 @@ export const updateNotificationPreferencesSchema = z.object({
       enabled: z.boolean(),
     })
   ),
+});
+
+export const createReviewSchema = z.object({
+  appointmentId: z.string().uuid(),
+  doctorId: z.string().min(1),
+  rating: z.number().int().min(1).max(5),
+  reviewText: z.string().max(2000).optional(),
+});
+
+export const doctorSearchSchema = z.object({
+  q: z.string().min(2).max(100).optional(),
+  specialization: z.string().max(255).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(12),
+});
+
+export const timelineFilterSchema = z.object({
+  type: z.enum(["appointment", "prescription", "visit_note"]).optional(),
+});
+
+export const reviewsQuerySchema = z.object({
+  doctorId: z.string().min(1),
 });

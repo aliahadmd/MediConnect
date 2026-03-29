@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { VisitHistory } from "@/components/appointments/visit-history";
+import { PrescriptionList } from "@/components/prescriptions/prescription-list";
 
-export default async function PatientHistoryPage() {
+export default async function PatientPrescriptionsPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -20,12 +20,12 @@ export default async function PatientHistoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Appointment History</h1>
+        <h1 className="text-2xl font-semibold">My Prescriptions</h1>
         <p className="text-muted-foreground">
-          View your past appointments, consultation notes, and prescriptions.
+          View and download prescriptions from your completed appointments.
         </p>
       </div>
-      <VisitHistory />
+      <PrescriptionList />
     </div>
   );
 }

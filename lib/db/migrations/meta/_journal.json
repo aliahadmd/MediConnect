@@ -15,6 +15,20 @@
       "when": 1774720305496,
       "tag": "0001_absurd_pride",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774753476735,
+      "tag": "0002_typical_zarda",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774782610990,
+      "tag": "0003_public_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

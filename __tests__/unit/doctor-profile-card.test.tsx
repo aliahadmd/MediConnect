@@ -81,4 +81,67 @@ describe("DoctorProfileCard", () => {
     expect(screen.getByText("Profile not yet completed")).toBeDefined();
     expect(screen.queryByText("Cardiology")).toBeNull();
   });
+
+  it("renders average rating and review count when averageRating is provided", () => {
+    render(
+      <DoctorProfileCard
+        name="Dr. Smith"
+        specialization="Cardiology"
+        profileComplete={true}
+        averageRating={4.5}
+        reviewCount={12}
+      />
+    );
+    expect(screen.getByText("(12 reviews)")).toBeDefined();
+    expect(screen.getByLabelText("5 out of 5 stars")).toBeDefined();
+  });
+
+  it("does not render rating when averageRating is null", () => {
+    render(
+      <DoctorProfileCard
+        name="Dr. Smith"
+        specialization="Cardiology"
+        profileComplete={true}
+        averageRating={null}
+        reviewCount={0}
+      />
+    );
+    expect(screen.queryByText(/reviews?\)/)).toBeNull();
+  });
+
+  it("does not render rating when averageRating is undefined", () => {
+    render(
+      <DoctorProfileCard
+        name="Dr. Smith"
+        specialization="Cardiology"
+        profileComplete={true}
+      />
+    );
+    expect(screen.queryByText(/reviews?\)/)).toBeNull();
+  });
+
+  it("shows singular 'review' when reviewCount is 1", () => {
+    render(
+      <DoctorProfileCard
+        name="Dr. Smith"
+        specialization="Cardiology"
+        profileComplete={true}
+        averageRating={5}
+        reviewCount={1}
+      />
+    );
+    expect(screen.getByText("(1 review)")).toBeDefined();
+  });
+
+  it("defaults reviewCount to 0 when averageRating is provided but reviewCount is omitted", () => {
+    render(
+      <DoctorProfileCard
+        name="Dr. Smith"
+        specialization="Cardiology"
+        profileComplete={true}
+        averageRating={3}
+      />
+    );
+    expect(screen.getByText("(0 reviews)")).toBeDefined();
+  });
 });

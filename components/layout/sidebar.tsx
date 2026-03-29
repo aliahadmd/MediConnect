@@ -9,6 +9,9 @@ import {
   Calendar,
   Stethoscope,
   Settings,
+  LayoutDashboard,
+  Pill,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +24,11 @@ interface NavItem {
 const navByRole: Record<string, NavItem[]> = {
   patient: [
     {
+      label: "Dashboard",
+      href: "/patient",
+      icon: <LayoutDashboard className="size-4" />,
+    },
+    {
       label: "Appointments",
       href: "/patient/appointments",
       icon: <CalendarDays className="size-4" />,
@@ -31,9 +39,24 @@ const navByRole: Record<string, NavItem[]> = {
       icon: <CalendarPlus className="size-4" />,
     },
     {
+      label: "Prescriptions",
+      href: "/patient/prescriptions",
+      icon: <Pill className="size-4" />,
+    },
+    {
+      label: "Timeline",
+      href: "/patient/timeline",
+      icon: <Clock className="size-4" />,
+    },
+    {
       label: "Visit History",
       href: "/patient/history",
       icon: <History className="size-4" />,
+    },
+    {
+      label: "Find Doctors",
+      href: "/doctors/search",
+      icon: <Search className="size-4" />,
     },
     {
       label: "Settings",
