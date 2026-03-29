@@ -114,9 +114,21 @@ export async function POST(request: NextRequest) {
         .where(eq(availabilitySlots.id, slotId));
 
       // Build scheduledAt from slot date + startTime
-      // slot.startTime may include seconds (e.g. "01:00:00") from PostgreSQL
+      // The client sends their IANA timezone (e.g., "Asia/Dhaka")
+      // We need to interpret the slot time in that timezone and store as UTC
       const timeStr = slot.startTime.substring(0, 5); // "HH:mm"
-      const scheduledAt = new Date(`${slot.date}T${timeStr}:00`);
+      const dateTimeStr = `${slot.date}T${timeStr}:00`;
+      
+      // Get the UTC offset for the client's timezone on this specific date
+      const tempDate = new Date(dateTimeStr + "Z"); // treat as UTC temporarily
+      const utcStr = tempDate.toLocaleString("en-US", { timeZone: "UTC" });
+      const tzStr = tempDate.toLocaleString("en-US", { timeZone: timezone });
+      const utcDate = new Date(utcStr);
+      const tzDate = new Date(tzStr);
+      const offsetMs = utcDate.getTime() - tzDate.getTime();
+      
+      // The slot time is in the client's timezone, so subtract the offset to get UTC
+      const scheduledAt = new Date(tempDate.getTime() + offsetMs);
 
       // Create the appointment
       const [appointment] = await tx
