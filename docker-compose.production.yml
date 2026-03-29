@@ -59,7 +59,7 @@ services:
     command:
       - -c
       - |
-        cat > /tmp/livekit.yaml <<EOF
+        cat > /tmp/livekit.yaml <<'EOF'
         port: 7880
         rtc:
           tcp_port: 7881
@@ -68,13 +68,19 @@ services:
         keys:
           devkey: aVeryLongSecretKeyThatIsAtLeast32Characters
         EOF
-        exec livekit-server --config /tmp/livekit.yaml --node-ip 72.62.162.106
+        exec /livekit-server --config /tmp/livekit.yaml --node-ip 72.62.162.106
     labels:
       - traefik.enable=true
       - traefik.http.routers.livekit.rule=Host(`livekit.aliahad.com`)
       - traefik.http.routers.livekit.entrypoints=websecure
       - traefik.http.routers.livekit.tls.certresolver=letsencrypt
       - traefik.http.services.livekit.loadbalancer.server.port=7880
+      # CORS for LiveKit HTTP endpoints (validate, etc.)
+      - traefik.http.middlewares.livekit-cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS
+      - traefik.http.middlewares.livekit-cors.headers.accesscontrolallowheaders=*
+      - traefik.http.middlewares.livekit-cors.headers.accesscontrolalloworiginlist=*
+      - traefik.http.middlewares.livekit-cors.headers.accesscontrolmaxage=3600
+      - traefik.http.routers.livekit.middlewares=livekit-cors
     ports:
       - "7881:7881"
       - "7882:7882/udp"
