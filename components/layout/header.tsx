@@ -10,11 +10,11 @@ interface HeaderProps {
 
 export function Header({ userName, userRole }: HeaderProps) {
   return (
-    <header className="flex h-14 items-center justify-between border-b bg-card px-6">
+    <header data-testid="header" className="flex h-16 items-center justify-between border-b bg-card px-6">
       <div />
       <div className="flex items-center gap-3">
-        <span className="text-sm font-medium">{userName}</span>
-        <Badge variant="secondary" className="capitalize">
+        <span className="text-sm font-semibold">{userName}</span>
+        <Badge variant="secondary" className="capitalize text-xs font-semibold px-3 py-1">
           {userRole}
         </Badge>
         <Separator orientation="vertical" className="h-6" />

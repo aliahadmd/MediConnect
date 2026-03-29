@@ -58,7 +58,12 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <div className="w-full max-w-md">
+      <div data-testid="auth-engagement-copy" className="mb-6 text-center">
+        <h1 className="text-3xl font-bold tracking-tight">Create your account</h1>
+        <p className="mt-2 text-muted-foreground">Join MediConnect and take control of your health</p>
+      </div>
+      <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-2xl">Create Account</CardTitle>
         <CardDescription>
@@ -81,6 +86,7 @@ export function RegisterForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              className="min-h-[44px]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -92,6 +98,7 @@ export function RegisterForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="min-h-[44px]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -104,6 +111,7 @@ export function RegisterForm() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
+              className="min-h-[44px]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -121,7 +129,7 @@ export function RegisterForm() {
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full min-h-[44px] min-w-[44px]" disabled={loading}>
             {loading ? "Creating account…" : "Register"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
@@ -133,5 +141,6 @@ export function RegisterForm() {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 }

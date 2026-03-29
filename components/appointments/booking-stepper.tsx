@@ -4,13 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { format, parseISO } from "date-fns";
 import {
-  CheckCircle2,
-  ChevronRight,
   FileText,
   GraduationCap,
   Loader2,
   XCircle,
 } from "lucide-react";
+import { CalendarIllustration, EmptyStateIllustration } from "@/components/illustrations";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -56,6 +55,12 @@ const stepVariants = {
 };
 
 const STEPS = ["Select Doctor", "Select Slot", "Confirm"] as const;
+
+const STEP_ENGAGEMENT_COPY = [
+  "Choose a doctor you trust — browse specializations and reviews",
+  "Pick a time that works for you — all times shown in your local timezone",
+  "Review your booking details and confirm your appointment",
+] as const;
 
 export function BookingStepper() {
   const [step, setStep] = useState(0);
@@ -170,11 +175,11 @@ export function BookingStepper() {
   return (
     <div className="mx-auto max-w-2xl">
       {/* Step indicator */}
-      <div className="mb-6 flex items-center justify-center gap-2">
+      <div className="mb-6 flex items-center justify-center gap-2" data-testid="booking-step-indicator">
         {STEPS.map((label, i) => (
           <div key={label} className="flex items-center gap-2">
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium ${
                 i <= step
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground"
@@ -190,11 +195,16 @@ export function BookingStepper() {
               {label}
             </span>
             {i < STEPS.length - 1 && (
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <div className="w-8 border-t-2 border-muted-foreground/30" />
             )}
           </div>
         ))}
       </div>
+
+      {/* Engagement copy for current step */}
+      <p className="mb-4 text-center text-sm text-muted-foreground" data-testid="booking-engagement-copy">
+        {STEP_ENGAGEMENT_COPY[step]}
+      </p>
 
       {/* Animated step content */}
       <AnimatePresence mode="wait">
@@ -286,8 +296,14 @@ function StepSelectDoctor({
   if (doctors.length === 0) {
     return (
       <Card>
-        <CardContent className="flex h-48 items-center justify-center text-muted-foreground">
-          No doctors available at the moment.
+        <CardContent className="flex flex-col items-center gap-4 py-10" data-testid="booking-empty-doctors">
+          <EmptyStateIllustration size={120} className="text-muted-foreground/60" />
+          <div className="space-y-1 text-center">
+            <p className="text-lg font-medium">No doctors available yet</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Doctors will appear once they set up their availability
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -307,7 +323,7 @@ function StepSelectDoctor({
             <button
               key={doc.id}
               onClick={() => onSelect(doc)}
-              className="rounded-lg text-left transition-colors hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="min-h-[44px] rounded-lg text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <DoctorProfileCard
                 name={doc.name}
@@ -390,9 +406,15 @@ function StepSelectSlot({
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : sortedDates.length === 0 ? (
-          <p className="py-8 text-center text-muted-foreground">
-            No available slots for this doctor.
-          </p>
+          <div className="flex flex-col items-center gap-4 py-8" data-testid="booking-empty-slots">
+            <EmptyStateIllustration size={120} className="text-muted-foreground/60" />
+            <div className="space-y-1 text-center">
+              <p className="text-lg font-medium">No available slots</p>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Try selecting a different doctor or check back later
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="space-y-4">
             {sortedDates.map((dateStr) => (
@@ -408,6 +430,7 @@ function StepSelectSlot({
                         key={slot.id}
                         variant="outline"
                         size="sm"
+                        className="min-h-[44px] min-w-[44px]"
                         onClick={() => onSelect(slot)}
                       >
                         {slot.startTime.slice(0, 5)} – {slot.endTime.slice(0, 5)}
@@ -453,9 +476,12 @@ function StepConfirm({
   if (result?.success) {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-10">
-          <CheckCircle2 className="h-12 w-12 text-green-500" />
-          <h3 className="text-lg font-semibold">Appointment Booked!</h3>
+        <CardContent className="flex flex-col items-center gap-4 py-10" data-testid="booking-success">
+          <CalendarIllustration size={120} className="text-primary" />
+          <h3 className="text-lg font-semibold">Your appointment is confirmed!</h3>
+          <p className="text-center text-sm text-muted-foreground">
+            You&apos;ll receive a notification when your doctor is ready
+          </p>
           <p className="text-center text-sm text-muted-foreground">
             Your appointment with Dr. {doctor.name} on{" "}
             {format(parseISO(slot.date), "MMMM d, yyyy")} at{" "}

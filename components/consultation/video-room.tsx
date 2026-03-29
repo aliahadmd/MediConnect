@@ -11,7 +11,8 @@ import "@livekit/components-styles";
 import { RoomEvent, ConnectionQuality } from "livekit-client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Video, PhoneOff, Loader2, WifiOff, RefreshCw, User } from "lucide-react";
+import { PhoneOff, Loader2, RefreshCw, User } from "lucide-react";
+import { VideoCallIllustration, ConsultationCompleteIllustration, ConnectionErrorIllustration } from "@/components/illustrations";
 import { NotesPanel } from "@/components/consultation/notes-panel";
 import { ConnectionStateIndicator } from "@/components/consultation/connection-state-indicator";
 import { ReconnectionOverlay } from "@/components/consultation/reconnection-overlay";
@@ -286,10 +287,13 @@ export function VideoRoom({
   if (connectionState === "idle") {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <Video className="size-16 text-muted-foreground" />
-          <div className="text-center">
-            <p className="text-lg font-medium">Ready to join?</p>
+        <CardContent className="flex flex-col items-center gap-4 py-12" data-testid="consultation-idle">
+          <VideoCallIllustration size={120} className="text-muted-foreground/60" />
+          <div className="text-center space-y-1">
+            <p className="text-lg font-medium">Ready for your consultation</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Click below to join your video session with your doctor
+            </p>
             <p className="text-sm text-muted-foreground">
               {slotDate} · {formatSlotTime(slotStartTime)} –{" "}
               {formatSlotTime(slotEndTime)}
@@ -303,8 +307,7 @@ export function VideoRoom({
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           {canJoin ? (
-            <Button size="lg" onClick={handleJoin}>
-              <Video className="mr-2 size-4" />
+            <Button size="lg" className="min-h-[44px] min-w-[44px]" onClick={handleJoin}>
               Join Consultation
             </Button>
           ) : (
@@ -335,11 +338,15 @@ export function VideoRoom({
   if (connectionState === "disconnected") {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <WifiOff className="size-16 text-destructive" />
-          <p className="text-lg font-medium">
-            {error || "Connection lost"}
-          </p>
+        <CardContent className="flex flex-col items-center gap-4 py-12" data-testid="consultation-disconnected">
+          <ConnectionErrorIllustration size={120} className="text-muted-foreground/60" />
+          <div className="text-center space-y-1">
+            <p className="text-lg font-medium">Connection lost</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Don&apos;t worry — this happens sometimes. Try reconnecting or check your internet connection.
+            </p>
+          </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
           <Button size="lg" onClick={handleRetry}>
             <RefreshCw className="mr-2 size-4" />
             Retry Connection
@@ -353,9 +360,14 @@ export function VideoRoom({
   if (connectionState === "ended") {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <PhoneOff className="size-16 text-muted-foreground" />
-          <p className="text-lg font-medium">Consultation ended</p>
+        <CardContent className="flex flex-col items-center gap-4 py-12" data-testid="consultation-ended">
+          <ConsultationCompleteIllustration size={120} className="text-muted-foreground/60" />
+          <div className="text-center space-y-1">
+            <p className="text-lg font-medium">Consultation complete</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Thank you for your visit. Check your prescriptions or leave a review for your doctor.
+            </p>
+          </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button variant="outline" asChild>
             <a href="/patient/appointments">Back to Appointments</a>

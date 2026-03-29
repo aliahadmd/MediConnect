@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DoctorProfileCard } from "@/components/profiles/doctor-profile-card";
 import { SpecializationBrowser } from "@/components/doctors/specialization-browser";
+import { EmptyStateIllustration } from "@/components/illustrations";
 
 interface DoctorSearchResult {
   id: string;
@@ -108,10 +109,10 @@ export default function DoctorSearchPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Find a Doctor</h1>
-        <p className="text-muted-foreground">
-          Search by name or specialization, or browse by category.
+      <div data-testid="doctor-search-header">
+        <h1 className="text-3xl font-bold">Find Your Doctor</h1>
+        <p className="text-muted-foreground mt-1">
+          Browse our network of verified healthcare professionals
         </p>
       </div>
 
@@ -151,9 +152,14 @@ export default function DoctorSearchPage() {
             ))}
           </div>
         ) : hasSearched && results.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 py-12 text-center">
-            <Search className="h-10 w-10 text-muted-foreground" />
-            <p className="text-muted-foreground">No doctors found matching your criteria.</p>
+          <div data-testid="doctor-search-no-results" className="flex flex-col items-center gap-4 py-12 text-center">
+            <EmptyStateIllustration size={160} className="text-muted-foreground/60" />
+            <div className="space-y-1">
+              <p className="text-lg font-medium">No doctors found</p>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Try adjusting your search or browse all specializations
+              </p>
+            </div>
             {(query || selectedSpecialization) && (
               <Button
                 variant="outline"

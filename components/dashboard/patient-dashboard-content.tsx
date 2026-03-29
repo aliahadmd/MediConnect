@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
+import { staggerContainer, cardVariants } from "@/lib/animation-variants";
+import { EmptyStateIllustration } from "@/components/illustrations";
 import {
   Card,
   CardHeader,
@@ -54,6 +57,10 @@ interface DashboardData {
   recentPrescriptions: PrescriptionListItem[];
 }
 
+interface PatientDashboardContentProps {
+  userName?: string;
+}
+
 function formatDate(dateStr: string): string {
   try {
     return format(new Date(dateStr), "MMMM d, yyyy");
@@ -62,7 +69,7 @@ function formatDate(dateStr: string): string {
   }
 }
 
-export function PatientDashboardContent() {
+export function PatientDashboardContent({ userName }: PatientDashboardContentProps) {
   const router = useRouter();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,38 +115,57 @@ export function PatientDashboardContent() {
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardDescription>Upcoming Appointments</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <CalendarIcon className="size-5 text-primary" />
-              {data.upcomingCount}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Completed Consultations</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <CheckCircle className="size-5 text-green-600" />
-              {data.completedCount}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Total Prescriptions</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Pill className="size-5 text-blue-600" />
-              {data.prescriptionCount}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
+      {/* Personalized greeting */}
+      {userName && (
+        <div data-testid="patient-greeting">
+          <h2 className="text-xl font-semibold">Welcome back, {userName}</h2>
+          <p className="text-muted-foreground">Here&apos;s your health overview</p>
+        </div>
+      )}
 
-      {/* Next Appointment + Quick Book */}
+      {/* Summary Cards */}
+      <motion.div
+        className="grid gap-4 sm:grid-cols-3"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={cardVariants}>
+          <Card>
+            <CardHeader>
+              <CardDescription>Upcoming Appointments</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-3xl font-bold">
+                <CalendarIcon className="size-8 text-primary" />
+                {data.upcomingCount}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </motion.div>
+        <motion.div variants={cardVariants}>
+          <Card className="bg-green-500/10">
+            <CardHeader>
+              <CardDescription>Completed Consultations</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-3xl font-bold">
+                <CheckCircle className="size-8 text-green-600" />
+                {data.completedCount}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </motion.div>
+        <motion.div variants={cardVariants}>
+          <Card className="bg-blue-500/10">
+            <CardHeader>
+              <CardDescription>Total Prescriptions</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-3xl font-bold">
+                <Pill className="size-8 text-blue-600" />
+                {data.prescriptionCount}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </motion.div>
+      </motion.div>
+
+      {/* Next Appointment + Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2">
         {data.nextAppointment ? (
           <Card>
@@ -170,15 +196,20 @@ export function PatientDashboardContent() {
             </CardContent>
           </Card>
         ) : (
-          <Card>
+          <Card data-testid="empty-appointments">
             <CardHeader>
               <CardTitle>No Upcoming Appointments</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                You don&apos;t have any upcoming appointments. Book a
-                consultation to get started.
-              </p>
+            <CardContent className="flex flex-col items-center gap-4 py-6 text-center">
+              <EmptyStateIllustration size={120} className="text-muted-foreground/60" />
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  You don&apos;t have any upcoming appointments.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Book a consultation with a doctor to get started on your wellness journey.
+                </p>
+              </div>
               <Button
                 size="sm"
                 onClick={() => router.push("/doctors/search")}
@@ -197,7 +228,7 @@ export function PatientDashboardContent() {
           <CardContent>
             <Button
               variant="outline"
-              className="w-full justify-start gap-2"
+              className="w-full justify-start gap-2 min-h-[44px] min-w-[44px]"
               onClick={() => router.push("/doctors/search")}
             >
               <Search className="size-4" />
@@ -227,10 +258,15 @@ export function PatientDashboardContent() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No prescriptions yet. Prescriptions from completed appointments will
-            appear here.
-          </p>
+          <div data-testid="empty-prescriptions" className="flex flex-col items-center gap-4 py-8 text-center">
+            <EmptyStateIllustration size={120} className="text-muted-foreground/60" />
+            <div className="space-y-1">
+              <p className="text-lg font-medium">No recent prescriptions</p>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Prescriptions from your completed appointments will appear here. Book a consultation to get started.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>

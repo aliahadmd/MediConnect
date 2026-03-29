@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Activity, DollarSign, Users } from "lucide-react";
 
 interface AnalyticsData {
   totalConsultations: number;
@@ -53,16 +54,25 @@ export function AnalyticsCharts() {
       title: "Total Consultations",
       value: data?.totalConsultations ?? 0,
       format: (v: number) => v.toLocaleString(),
+      icon: Activity,
+      bg: "bg-kiosk-primary/10",
+      iconColor: "text-kiosk-primary",
     },
     {
       title: "Total Revenue",
       value: data?.totalRevenue ?? 0,
       format: (v: number) => `$${v.toLocaleString()}`,
+      icon: DollarSign,
+      bg: "bg-kiosk-success/10",
+      iconColor: "text-kiosk-success",
     },
     {
       title: "Active Doctors",
       value: data?.activeDoctors ?? 0,
       format: (v: number) => v.toLocaleString(),
+      icon: Users,
+      bg: "bg-kiosk-info/10",
+      iconColor: "text-kiosk-info",
     },
   ];
 
@@ -98,21 +108,25 @@ export function AnalyticsCharts() {
       </Card>
 
       {/* Summary stat cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">
-                {loading ? "…" : stat.format(stat.value)}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid gap-4 sm:grid-cols-3" data-testid="admin-stat-cards">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={stat.title} className={stat.bg}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <Icon className={`size-8 ${stat.iconColor}`} />
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">
+                  {loading ? "…" : stat.format(stat.value)}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Consultation trend bar chart */}

@@ -104,7 +104,7 @@ export function PhotoUpload({ currentPhotoUrl }: PhotoUploadProps) {
   return (
     <div className="flex items-center gap-6">
       {/* Avatar display */}
-      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-muted">
+      <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-muted">
         {displayUrl ? (
           <img
             src={displayUrl}
@@ -113,7 +113,7 @@ export function PhotoUpload({ currentPhotoUrl }: PhotoUploadProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <User className="h-10 w-10 text-muted-foreground" />
+            <User className="h-12 w-12 text-muted-foreground" />
           </div>
         )}
       </div>
@@ -132,8 +132,8 @@ export function PhotoUpload({ currentPhotoUrl }: PhotoUploadProps) {
         {!selectedFile ? (
           <Button
             type="button"
-            variant="outline"
-            size="sm"
+            variant="default"
+            className="min-h-[44px] min-w-[44px]"
             onClick={() => fileInputRef.current?.click()}
           >
             <Upload className="mr-1.5 h-4 w-4" />

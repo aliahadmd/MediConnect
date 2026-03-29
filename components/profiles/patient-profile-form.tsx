@@ -119,6 +119,7 @@ export function PatientProfileForm({ initialData }: PatientProfileFormProps) {
         <Label htmlFor="dateOfBirth">Date of Birth</Label>
         <Input
           id="dateOfBirth"
+          className="min-h-[44px]"
           type="date"
           value={dateOfBirth}
           onChange={(e) => setDateOfBirth(e.target.value)}
@@ -150,6 +151,7 @@ export function PatientProfileForm({ initialData }: PatientProfileFormProps) {
         <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
+          className="min-h-[44px]"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+1 (555) 123-4567"
@@ -163,6 +165,7 @@ export function PatientProfileForm({ initialData }: PatientProfileFormProps) {
         <Label htmlFor="address">Address</Label>
         <Input
           id="address"
+          className="min-h-[44px]"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="123 Main St, City, State"
@@ -177,6 +180,7 @@ export function PatientProfileForm({ initialData }: PatientProfileFormProps) {
           <Label htmlFor="emergencyContactName">Emergency Contact Name</Label>
           <Input
             id="emergencyContactName"
+            className="min-h-[44px]"
             value={emergencyContactName}
             onChange={(e) => setEmergencyContactName(e.target.value)}
             placeholder="Contact name"
@@ -190,6 +194,7 @@ export function PatientProfileForm({ initialData }: PatientProfileFormProps) {
           <Label htmlFor="emergencyContactPhone">Emergency Contact Phone</Label>
           <Input
             id="emergencyContactPhone"
+            className="min-h-[44px]"
             value={emergencyContactPhone}
             onChange={(e) => setEmergencyContactPhone(e.target.value)}
             placeholder="+1 (555) 123-4567"

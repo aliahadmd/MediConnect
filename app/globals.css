@@ -29,6 +29,21 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
+
+  /* Healthcare accent palette */
+  --kiosk-primary: 199 89% 48%;
+  --kiosk-primary-foreground: 0 0% 100%;
+  --kiosk-success: 152 69% 41%;
+  --kiosk-warning: 38 92% 50%;
+  --kiosk-info: 217 91% 60%;
+
+  /* Kiosk spacing tokens */
+  --kiosk-card-padding: 24px;
+  --kiosk-card-radius: 16px;
+  --kiosk-touch-min: 44px;
+
+  /* Typography */
+  --kiosk-body-min: 16px;
 }
 
 .dark {
@@ -56,6 +71,13 @@
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
+
+  /* Healthcare accent palette (dark) */
+  --kiosk-primary: 199 89% 60%;
+  --kiosk-primary-foreground: 0 0% 5%;
+  --kiosk-success: 152 69% 55%;
+  --kiosk-warning: 38 92% 60%;
+  --kiosk-info: 217 91% 70%;
 }
 
 @theme inline {
@@ -83,6 +105,11 @@
   --color-chart-3: hsl(var(--chart-3));
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
+  --color-kiosk-primary: hsl(var(--kiosk-primary));
+  --color-kiosk-primary-foreground: hsl(var(--kiosk-primary-foreground));
+  --color-kiosk-success: hsl(var(--kiosk-success));
+  --color-kiosk-warning: hsl(var(--kiosk-warning));
+  --color-kiosk-info: hsl(var(--kiosk-info));
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Stethoscope, Loader2 } from "lucide-react";
+import { WaitingIllustration } from "@/components/illustrations";
 
 interface WaitingRoomProps {
   appointmentId: string;
@@ -77,26 +78,51 @@ export function WaitingRoom({ appointmentId }: WaitingRoomProps) {
       {/* Queue position card */}
       <Card>
         <CardContent className="flex flex-col items-center gap-6 py-12">
-          {/* Pulsing animation while waiting */}
+          {/* Waiting state */}
           {!doctorReady && (
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="flex size-24 items-center justify-center rounded-full bg-primary/10"
-            >
-              <Clock className="size-12 text-primary" />
-            </motion.div>
+            <div data-testid="waiting-state" className="flex flex-col items-center gap-6">
+              {/* Waiting illustration */}
+              <WaitingIllustration size={120} className="text-muted-foreground/60" />
+
+              {/* Pulsing animation while waiting */}
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="flex size-24 items-center justify-center rounded-full bg-primary/10"
+              >
+                <Clock className="size-12 text-primary" />
+              </motion.div>
+
+              {/* Calming engagement copy */}
+              <div className="space-y-1 text-center">
+                <p className="text-lg font-medium">Your doctor will be with you shortly</p>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  Relax and prepare for your consultation. You&apos;ll be notified when your doctor is ready.
+                </p>
+              </div>
+            </div>
           )}
 
+          {/* Doctor ready state */}
           {doctorReady && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="flex size-24 items-center justify-center rounded-full bg-green-100"
-            >
-              <Stethoscope className="size-12 text-green-600" />
-            </motion.div>
+            <div data-testid="doctor-ready-state" className="flex flex-col items-center gap-6">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="flex size-24 items-center justify-center rounded-full bg-green-100"
+              >
+                <Stethoscope className="size-12 text-green-600" />
+              </motion.div>
+
+              {/* Doctor-ready engagement copy */}
+              <div className="space-y-1 text-center">
+                <p className="text-lg font-medium">Your doctor is ready to see you</p>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  Click the button below to join your consultation
+                </p>
+              </div>
+            </div>
           )}
 
           {/* Animated queue position */}
@@ -115,7 +141,7 @@ export function WaitingRoom({ appointmentId }: WaitingRoomProps) {
                     Queue Position
                   </span>
                 </div>
-                <p className="mt-1 text-5xl font-bold tabular-nums">
+                <p className="mt-1 text-6xl font-black tabular-nums">
                   {queuePosition}
                 </p>
               </motion.div>
@@ -138,7 +164,7 @@ export function WaitingRoom({ appointmentId }: WaitingRoomProps) {
                 exit={{ opacity: 0, y: 30, scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
               >
-                <Button size="lg" asChild>
+                <Button size="lg" className="min-h-[44px] min-w-[44px] bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base px-8" asChild>
                   <a href={`/consultation/${appointmentId}`}>
                     <Stethoscope className="mr-2 size-4" />
                     Doctor is ready — Join Now
@@ -147,13 +173,6 @@ export function WaitingRoom({ appointmentId }: WaitingRoomProps) {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {!doctorReady && (
-            <p className="max-w-sm text-center text-sm text-muted-foreground">
-              Please wait while the doctor prepares for your consultation.
-              This page updates automatically.
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>

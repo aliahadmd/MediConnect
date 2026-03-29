@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { PrescriptionList } from "@/components/prescriptions/prescription-list";
+import { PageTransition } from "@/components/ui/page-transition";
 
 export default async function PatientPrescriptionsPage() {
   const session = await auth.api.getSession({
@@ -18,14 +19,16 @@ export default async function PatientPrescriptionsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">My Prescriptions</h1>
-        <p className="text-muted-foreground">
-          View and download prescriptions from your completed appointments.
-        </p>
+    <PageTransition>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold">My Prescriptions</h1>
+          <p className="text-muted-foreground">
+            View and download prescriptions from your completed appointments.
+          </p>
+        </div>
+        <PrescriptionList />
       </div>
-      <PrescriptionList />
-    </div>
+    </PageTransition>
   );
 }

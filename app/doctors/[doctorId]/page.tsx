@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, ShieldCheck, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DoctorProfileCard } from "@/components/profiles/doctor-profile-card";
 import { RatingStars } from "@/components/reviews/rating-stars";
 import { ReviewCard } from "@/components/reviews/review-card";
+import { EmptyStateIllustration } from "@/components/illustrations";
 
 interface DoctorProfile {
   id: string;
@@ -151,6 +152,20 @@ export default function DoctorProfilePage() {
         reviewCount={doctor.reviewCount}
       />
 
+      {/* Trust indicators */}
+      <div data-testid="doctor-trust-indicators" className="flex flex-wrap gap-3">
+        <div className="inline-flex items-center gap-2 rounded-full bg-kiosk-success/10 px-4 py-2 text-sm font-medium text-kiosk-success">
+          <ShieldCheck className="h-4 w-4" />
+          Verified Professional
+        </div>
+        {doctor.yearsOfExperience != null && doctor.yearsOfExperience > 0 && (
+          <div className="inline-flex items-center gap-2 rounded-full bg-kiosk-primary/10 px-4 py-2 text-sm font-medium text-kiosk-primary">
+            <Briefcase className="h-4 w-4" />
+            {doctor.yearsOfExperience} {doctor.yearsOfExperience === 1 ? "year" : "years"} of experience
+          </div>
+        )}
+      </div>
+
       {!doctor.profileComplete && (
         <Card>
           <CardContent className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -179,7 +194,9 @@ export default function DoctorProfilePage() {
 
       {isPatient && (
         <Link href="/patient/book">
-          <Button className="w-full">Book Appointment</Button>
+          <Button className="w-full min-h-[44px] min-w-[44px] text-base font-semibold">
+            Book Appointment
+          </Button>
         </Link>
       )}
 
@@ -200,7 +217,15 @@ export default function DoctorProfilePage() {
         </CardHeader>
         <CardContent>
           {reviews.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No reviews yet.</p>
+            <div data-testid="doctor-no-reviews" className="flex flex-col items-center gap-4 py-8 text-center">
+              <EmptyStateIllustration size={120} className="text-muted-foreground/60" />
+              <div className="space-y-1">
+                <p className="text-lg font-medium">No reviews yet</p>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  Be the first to share your experience
+                </p>
+              </div>
+            </div>
           ) : (
             <div className="space-y-4">
               {reviews.map((review) => (

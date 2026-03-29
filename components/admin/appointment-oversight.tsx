@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyStateIllustration } from "@/components/illustrations";
 
 interface Appointment {
   id: string;
@@ -173,9 +174,15 @@ export function AppointmentOversight() {
               <TableRow>
                 <TableCell
                   colSpan={6}
-                  className="text-center py-8 text-muted-foreground"
+                  className="py-8"
                 >
-                  No appointments found.
+                  <div className="flex flex-col items-center gap-3 text-center" data-testid="empty-admin-appointments">
+                    <EmptyStateIllustration size={96} decorative className="text-muted-foreground/60" />
+                    <div className="space-y-1">
+                      <p className="text-lg font-medium">No appointments found</p>
+                      <p className="text-sm text-muted-foreground max-w-sm">Appointments will appear here once patients start booking consultations</p>
+                    </div>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (

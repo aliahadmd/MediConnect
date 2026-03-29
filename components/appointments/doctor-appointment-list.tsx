@@ -25,6 +25,7 @@ import {
   Eye,
 } from "lucide-react";
 import { PatientProfileViewer } from "@/components/profiles/patient-profile-viewer";
+import { EmptyStateIllustration } from "@/components/illustrations";
 import type { Appointment } from "./appointment-card";
 
 const STATUS_OPTIONS = [
@@ -151,11 +152,14 @@ export function DoctorAppointmentList({ callingNotifications = {} }: DoctorAppoi
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <CalendarIcon className="size-10 text-muted-foreground/50" />
-          <p className="mt-3 text-muted-foreground">No appointments found</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center" data-testid="empty-doctor-appointments">
+          <EmptyStateIllustration size={120} decorative className="text-muted-foreground/60" />
+          <p className="mt-4 text-lg font-medium">No appointments yet</p>
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Set up your availability to start receiving patient bookings
+          </p>
           {statusFilter !== "all" && (
-            <p className="text-sm text-muted-foreground/70">
+            <p className="mt-1 text-sm text-muted-foreground/70">
               Try changing the status filter
             </p>
           )}

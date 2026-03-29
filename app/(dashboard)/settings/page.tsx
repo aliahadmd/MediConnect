@@ -64,19 +64,19 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+      <div data-testid="settings-header">
+        <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-muted-foreground">
-          Manage your profile and account preferences.
+          Manage your profile and preferences
         </p>
       </div>
 
       {/* Personal Info Section */}
-      <Card>
+      <Card className="p-6">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            <CardTitle>Personal Information</CardTitle>
+            <User className="h-6 w-6" />
+            <CardTitle className="font-semibold">Personal Information</CardTitle>
           </div>
           <CardDescription>
             Your basic account information.
@@ -96,11 +96,11 @@ export default async function SettingsPage() {
 
       {/* Professional / Medical Info Section */}
       {userRole === "doctor" && (
-        <Card>
+        <Card className="p-6">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Stethoscope className="h-5 w-5" />
-              <CardTitle>Professional Information</CardTitle>
+              <Stethoscope className="h-6 w-6" />
+              <CardTitle className="font-semibold">Professional Information</CardTitle>
             </div>
             <CardDescription>
               Update your specialization, qualifications, and consultation details.
@@ -113,11 +113,11 @@ export default async function SettingsPage() {
       )}
 
       {userRole === "patient" && (
-        <Card>
+        <Card className="p-6">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <HeartPulse className="h-5 w-5" />
-              <CardTitle>Medical Information</CardTitle>
+              <HeartPulse className="h-6 w-6" />
+              <CardTitle className="font-semibold">Medical Information</CardTitle>
             </div>
             <CardDescription>
               Update your medical details and emergency contact information.
@@ -130,27 +130,29 @@ export default async function SettingsPage() {
       )}
 
       {/* Photo Upload Section */}
-      <Card>
+      <Card className="p-6">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Camera className="h-5 w-5" />
-            <CardTitle>Profile Photo</CardTitle>
+            <Camera className="h-6 w-6" />
+            <CardTitle className="font-semibold">Profile Photo</CardTitle>
           </div>
           <CardDescription>
             Upload a profile photo so others can identify you.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PhotoUpload currentPhotoUrl={currentPhotoUrl} />
+          <div data-testid="settings-photo-upload">
+            <PhotoUpload currentPhotoUrl={currentPhotoUrl} />
+          </div>
         </CardContent>
       </Card>
 
       {/* Notification Preferences Section */}
-      <Card>
+      <Card className="p-6">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            <CardTitle>Notification Preferences</CardTitle>
+            <Bell className="h-6 w-6" />
+            <CardTitle className="font-semibold">Notification Preferences</CardTitle>
           </div>
           <CardDescription>
             Control which notifications you receive.

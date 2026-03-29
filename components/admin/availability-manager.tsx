@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { EmptyStateIllustration } from "@/components/illustrations";
 
 interface AvailabilitySlot {
   id: string;
@@ -255,9 +256,15 @@ export function AvailabilityManager() {
               <TableRow>
                 <TableCell
                   colSpan={5}
-                  className="text-center py-8 text-muted-foreground"
+                  className="py-8"
                 >
-                  No availability slots found.
+                  <div className="flex flex-col items-center gap-3 text-center" data-testid="empty-admin-availability">
+                    <EmptyStateIllustration size={96} decorative className="text-muted-foreground/60" />
+                    <div className="space-y-1">
+                      <p className="text-lg font-medium">No availability slots found</p>
+                      <p className="text-sm text-muted-foreground max-w-sm">Availability slots will appear here once doctors set up their schedules</p>
+                    </div>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (

@@ -96,14 +96,14 @@ export function NotificationPreferences() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="h-4 w-36 animate-pulse rounded bg-muted" />
-              <div className="h-3 w-56 animate-pulse rounded bg-muted" />
+      <div className="space-y-5" data-testid="notification-preferences-skeleton">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center justify-between py-1">
+            <div className="space-y-2">
+              <div className="h-4 w-40 animate-pulse rounded-md bg-muted" />
+              <div className="h-3 w-60 animate-pulse rounded-md bg-muted" />
             </div>
-            <div className="h-5 w-9 animate-pulse rounded-full bg-muted" />
+            <div className="h-6 w-10 animate-pulse rounded-full bg-muted" />
           </div>
         ))}
       </div>

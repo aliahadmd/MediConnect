@@ -17,15 +17,19 @@ export default async function PatientDashboardPage() {
     redirect("/login");
   }
 
+  const userName = session.user.name || "there";
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div data-testid="patient-greeting">
+        <h1 className="text-2xl font-semibold">
+          Welcome back, {userName}
+        </h1>
         <p className="text-muted-foreground">
-          Welcome back. Here&apos;s an overview of your healthcare activity.
+          Here&apos;s your health overview
         </p>
       </div>
-      <PatientDashboardContent />
+      <PatientDashboardContent userName={userName} />
     </div>
   );
 }

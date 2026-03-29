@@ -80,7 +80,7 @@ export function SpecializationBrowser({
             type="button"
             onClick={() => onSelectSpecialization(item.specialization)}
             className={cn(
-              "flex flex-col items-center gap-1.5 rounded-xl border p-4 text-center transition-colors",
+              "flex flex-col items-center gap-1.5 rounded-xl border p-4 text-center transition-colors min-h-[44px] min-w-[44px]",
               isSelected
                 ? "border-primary bg-primary/5 text-primary"
                 : "border-border bg-card hover:border-primary/50",

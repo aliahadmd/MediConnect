@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { illustrationVariants } from "@/lib/animation-variants";
 import { PrescriptionCard } from "@/components/prescriptions/prescription-card";
+import { EmptyStateIllustration } from "@/components/illustrations";
+import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
+import Link from "next/link";
 
 interface PrescriptionListItem {
   id: string;
@@ -58,14 +63,19 @@ export function PrescriptionList() {
 
   if (prescriptions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-        <FileText className="size-12 text-muted-foreground/50" />
-        <div>
-          <p className="font-medium text-muted-foreground">No prescriptions yet</p>
-          <p className="text-sm text-muted-foreground">
-            Prescriptions from your completed appointments will appear here.
+      <div data-testid="empty-prescriptions-list" className="flex flex-col items-center gap-4 py-12 text-center">
+        <motion.div variants={illustrationVariants} initial="hidden" animate="visible">
+          <EmptyStateIllustration size={160} className="text-muted-foreground/60" />
+        </motion.div>
+        <div className="space-y-1">
+          <p className="text-lg font-medium">No prescriptions yet</p>
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Prescriptions from your completed appointments will appear here
           </p>
         </div>
+        <Button asChild className="min-h-[44px] min-w-[44px]">
+          <Link href="/patient/appointments">View Appointments</Link>
+        </Button>
       </div>
     );
   }

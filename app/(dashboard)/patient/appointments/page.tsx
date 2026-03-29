@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { AppointmentList } from "@/components/appointments/appointment-list";
+import { PageTransition } from "@/components/ui/page-transition";
 
 export default async function PatientAppointmentsPage() {
   const session = await auth.api.getSession({
@@ -18,14 +19,16 @@ export default async function PatientAppointmentsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">My Appointments</h1>
-        <p className="text-muted-foreground">
-          View and manage your upcoming and past appointments.
-        </p>
+    <PageTransition>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold">My Appointments</h1>
+          <p className="text-muted-foreground">
+            View and manage your upcoming and past appointments.
+          </p>
+        </div>
+        <AppointmentList />
       </div>
-      <AppointmentList />
-    </div>
+    </PageTransition>
   );
 }

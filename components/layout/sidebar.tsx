@@ -7,13 +7,13 @@ import {
   Users,
   BarChart3,
   Calendar,
-  Stethoscope,
   Settings,
   LayoutDashboard,
   Pill,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StethoscopeIllustration } from "@/components/illustrations";
 
 interface NavItem {
   label: string;
@@ -119,9 +119,9 @@ export function Sidebar({ userRole }: SidebarProps) {
   const items = navByRole[userRole] ?? [];
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r bg-card">
-      <div className="flex items-center gap-2 border-b px-4 py-4">
-        <Stethoscope className="size-6 text-primary" />
+    <aside data-testid="sidebar" className="flex h-full w-64 flex-col border-r bg-linear-to-b from-card to-accent/5">
+      <div data-testid="sidebar-logo" className="flex items-center gap-2 border-b px-4 py-4">
+        <StethoscopeIllustration size={32} decorative />
         <span className="text-lg font-semibold">MediConnect</span>
       </div>
 
@@ -131,7 +131,7 @@ export function Sidebar({ userRole }: SidebarProps) {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              "flex items-center gap-3 rounded-lg px-3 py-2 min-h-[44px] text-sm font-medium text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground transition-colors duration-200"
             )}
           >
             {item.icon}

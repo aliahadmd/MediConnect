@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { illustrationVariants } from "@/lib/animation-variants";
 import { TimelineEvent } from "@/components/timeline/timeline-event";
+import { EmptyStateIllustration } from "@/components/illustrations";
 import { Button } from "@/components/ui/button";
 import {
   CalendarIcon,
@@ -95,17 +99,19 @@ export function MedicalTimelineContent() {
           {error}
         </div>
       ) : events.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-          <Clock className="size-12 text-muted-foreground/50" />
-          <div>
-            <p className="font-medium text-muted-foreground">
-              No medical events yet
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Your appointments, prescriptions, and visit notes will appear here
-              as a timeline.
+        <div data-testid="empty-timeline" className="flex flex-col items-center gap-4 py-12 text-center">
+          <motion.div variants={illustrationVariants} initial="hidden" animate="visible">
+            <EmptyStateIllustration size={160} className="text-muted-foreground/60" />
+          </motion.div>
+          <div className="space-y-1">
+            <p className="text-lg font-medium">No timeline events yet</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Your healthcare journey will be recorded here as you use the platform
             </p>
           </div>
+          <Button asChild className="min-h-[44px] min-w-[44px]">
+            <Link href="/patient/book">Book Appointment</Link>
+          </Button>
         </div>
       ) : (
         <div className="space-y-0">

@@ -101,6 +101,7 @@ export function DoctorProfileForm({ initialData }: DoctorProfileFormProps) {
         <Label htmlFor="specialization">Specialization *</Label>
         <Input
           id="specialization"
+          className="min-h-[44px]"
           value={specialization}
           onChange={(e) => setSpecialization(e.target.value)}
           placeholder="e.g. Cardiology"
@@ -142,6 +143,7 @@ export function DoctorProfileForm({ initialData }: DoctorProfileFormProps) {
         <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
+          className="min-h-[44px]"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+1 (555) 123-4567"
@@ -156,6 +158,7 @@ export function DoctorProfileForm({ initialData }: DoctorProfileFormProps) {
           <Label htmlFor="consultationFee">Consultation Fee ($) *</Label>
           <Input
             id="consultationFee"
+            className="min-h-[44px]"
             type="number"
             min="0"
             step="0.01"
@@ -172,6 +175,7 @@ export function DoctorProfileForm({ initialData }: DoctorProfileFormProps) {
           <Label htmlFor="yearsOfExperience">Years of Experience *</Label>
           <Input
             id="yearsOfExperience"
+            className="min-h-[44px]"
             type="number"
             min="0"
             step="1"

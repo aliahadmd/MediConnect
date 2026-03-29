@@ -7,6 +7,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
+import { illustrationVariants } from "@/lib/animation-variants";
+import { EmptyStateIllustration } from "@/components/illustrations";
 import {
   CalendarIcon,
   ClockIcon,
@@ -163,16 +166,20 @@ export function VisitHistory() {
 
   if (appointments.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <HistoryIcon className="size-10 text-muted-foreground/50" />
-        <p className="mt-3 text-muted-foreground">No past appointments yet</p>
-        <p className="mt-1 text-sm text-muted-foreground/70">
-          Book a consultation to get started with your healthcare journey.
-        </p>
-        <Button asChild variant="outline" className="mt-4">
+      <div data-testid="empty-visit-history" className="flex flex-col items-center gap-4 py-12 text-center">
+        <motion.div variants={illustrationVariants} initial="hidden" animate="visible">
+          <EmptyStateIllustration size={160} className="text-muted-foreground/60" />
+        </motion.div>
+        <div className="space-y-1">
+          <p className="text-lg font-medium">No visit history yet</p>
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Your past consultations will appear here after you complete an appointment
+          </p>
+        </div>
+        <Button asChild className="min-h-[44px] min-w-[44px]">
           <Link href="/patient/book">
             <CalendarPlusIcon className="mr-2 size-4" />
-            Book a Consultation
+            Book Appointment
           </Link>
         </Button>
       </div>

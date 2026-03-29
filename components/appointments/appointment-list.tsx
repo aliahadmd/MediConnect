@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { illustrationVariants } from "@/lib/animation-variants";
 import {
   Select,
   SelectContent,
@@ -8,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { EmptyStateIllustration } from "@/components/illustrations";
 import { AppointmentCard, type Appointment } from "./appointment-card";
 import { CalendarIcon, Loader2Icon } from "lucide-react";
 
@@ -74,9 +79,19 @@ export function AppointmentList() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <CalendarIcon className="size-10 text-muted-foreground/50" />
-          <p className="mt-3 text-muted-foreground">No appointments found</p>
+        <div data-testid="empty-patient-appointments" className="flex flex-col items-center gap-4 py-12 text-center">
+          <motion.div variants={illustrationVariants} initial="hidden" animate="visible">
+            <EmptyStateIllustration size={160} className="text-muted-foreground/60" />
+          </motion.div>
+          <div className="space-y-1">
+            <p className="text-lg font-medium">No appointments yet</p>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              Book a consultation to get started
+            </p>
+          </div>
+          <Button asChild className="min-h-[44px] min-w-[44px]">
+            <Link href="/patient/book">Book Appointment</Link>
+          </Button>
           {statusFilter !== "all" && (
             <p className="text-sm text-muted-foreground/70">
               Try changing the status filter

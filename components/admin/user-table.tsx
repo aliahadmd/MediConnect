@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyStateIllustration } from "@/components/illustrations";
 
 interface DoctorProfile {
   specialization: string | null;
@@ -214,8 +215,14 @@ export function UserTable() {
               </TableRow>
             ) : data && data.users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  No users found.
+                <TableCell colSpan={6} className="py-8">
+                  <div className="flex flex-col items-center gap-3 text-center" data-testid="empty-admin-users">
+                    <EmptyStateIllustration size={96} decorative className="text-muted-foreground/60" />
+                    <div className="space-y-1">
+                      <p className="text-lg font-medium">No users found</p>
+                      <p className="text-sm text-muted-foreground max-w-sm">Users will appear here as they register on the platform</p>
+                    </div>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (

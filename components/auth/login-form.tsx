@@ -57,7 +57,12 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <div className="w-full max-w-md">
+      <div data-testid="auth-engagement-copy" className="mb-6 text-center">
+        <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
+        <p className="mt-2 text-muted-foreground">Sign in to access your health dashboard</p>
+      </div>
+      <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-2xl">Sign In</CardTitle>
         <CardDescription>
@@ -80,6 +85,7 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="min-h-[44px]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -91,9 +97,10 @@ export function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="min-h-[44px]"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full min-h-[44px] min-w-[44px]" disabled={loading}>
             {loading ? "Signing in…" : "Sign In"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
@@ -105,5 +112,6 @@ export function LoginForm() {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 }
