@@ -31,36 +31,33 @@ cd mediconnect
 
 ## 3. Configure environment
 
+The `.env.production` file is gitignored and not pushed to the repository. Copy it from your local development environment and create a `.env` file on the server:
+
+1. On your local machine, open `.env.production` and copy its contents
+2. On the server, create the `.env` file:
+
 ```bash
-cp .env.production .env.production.local
+nano .env
 ```
 
-Edit `.env.production.local` with your production values:
+3. Paste the contents from `.env.production` and update the values for your production setup:
 
 ```env
 NODE_ENV=production
 PORT=3000
-
-# Database — use strong credentials
-DATABASE_URL=postgresql://mediconnect:<STRONG_PASSWORD>@postgres:5432/mediconnect
-
-# LiveKit — generate real keys for production
+DATABASE_URL=postgresql://mediconnect:mediconnect@postgres:5432/mediconnect
 LIVEKIT_URL=wss://livekit.yourdomain.com
-LIVEKIT_API_KEY=<YOUR_LIVEKIT_API_KEY>
+LIVEKIT_API_KEY=devkey
 LIVEKIT_API_SECRET=<YOUR_LIVEKIT_API_SECRET>
-
-# MinIO — use strong credentials
 MINIO_ENDPOINT=minio
 MINIO_PORT=9000
-MINIO_ACCESS_KEY=<STRONG_MINIO_KEY>
-MINIO_SECRET_KEY=<STRONG_MINIO_SECRET>
-
-# Auth — generate a random 32+ char secret
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
 BETTER_AUTH_SECRET=<RANDOM_SECRET_32_CHARS>
 BETTER_AUTH_URL=https://yourdomain.com
 ```
 
-Generate secrets:
+For production, generate strong secrets:
 
 ```bash
 openssl rand -base64 32   # For BETTER_AUTH_SECRET
@@ -68,29 +65,9 @@ openssl rand -hex 16      # For MINIO keys
 openssl rand -hex 24      # For database password
 ```
 
-## 4. Update Docker Compose for production
+The Docker Compose services read from this `.env` file via `env_file: .env`.
 
-Update `compose.yml` to use your production env file. Replace the environment block in the `nextjs-standalone` service:
-
-```yaml
-services:
-  nextjs-standalone:
-    env_file: .env.production.local
-    environment:
-      DATABASE_URL: postgresql://mediconnect:<DB_PASSWORD>@postgres:5432/mediconnect
-```
-
-Also update the PostgreSQL service credentials to match:
-
-```yaml
-  postgres:
-    environment:
-      POSTGRES_USER: mediconnect
-      POSTGRES_PASSWORD: <SAME_DB_PASSWORD>
-      POSTGRES_DB: mediconnect
-```
-
-## 5. Update LiveKit config
+## 4. Update LiveKit config
 
 Edit `livekit.yaml` with production keys:
 
@@ -104,7 +81,7 @@ keys:
   <YOUR_LIVEKIT_API_KEY>: <YOUR_LIVEKIT_API_SECRET>
 ```
 
-## 6. Build and start
+## 5. Build and start
 
 ```bash
 # Build and start all services
@@ -123,7 +100,7 @@ This starts:
 - **LiveKit** on ports 7880-7882
 - **MinIO** on ports 9000-9001
 
-## 7. Initialize the database
+## 6. Initialize the database
 
 Push the schema and optionally seed demo data:
 
@@ -133,7 +110,7 @@ Push the schema and optionally seed demo data:
 docker compose -f docker-compose.production.yml --profile seed up seed
 ```
 
-## 8. Set up reverse proxy (Nginx + SSL)
+## 7. Set up reverse proxy (Nginx + SSL)
 
 Install Nginx and Certbot:
 
@@ -186,7 +163,7 @@ sudo systemctl reload nginx
 sudo certbot --nginx -d yourdomain.com
 ```
 
-## 9. LiveKit reverse proxy (optional)
+## 8. LiveKit reverse proxy (optional)
 
 If you want LiveKit accessible via `wss://livekit.yourdomain.com`, add another Nginx config:
 
